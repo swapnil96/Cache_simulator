@@ -32,7 +32,6 @@
 typedef struct cache_line_ {
   unsigned tag;
   int dirty;
-
   struct cache_line_ *LRU_next;
   struct cache_line_ *LRU_prev;
 } cache_line, *Pcache_line;

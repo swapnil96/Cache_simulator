@@ -90,25 +90,6 @@ void set_cache_param(int param, int value)
 }
 /************************************************************/
 
-//Print function to print properties of cache
-
-void print_cache_prop()
-{
-static int cache_writeback = DEFAULT_CACHE_WRITEBACK;
-static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
-	printf("--------------_Cache parameters------------------------------\n");
-	printf("\tCache Block size - %d\n", cache_block_size);
-	printf("\tCache d size - %d\n", cache_dsize);
-	printf("\tCache i size - %d\n", cache_isize);
-	printf("\tCache u size - %d\n", cache_usize);
-	printf("\tCache associativity - %d\n", cache_assoc);
-	printf("\tCache words_per_block - %d\n", cache_block_size/ 4);
-	printf("\tCache split - %d\n", cache_split);
-	printf("\tCache writeback - %d\n", cache_writeback);
-	printf("\tCache writealloc - %d\n", cache_writealloc);
-}
-
-
 /************************************************************/
 // To_do - called once to buildand initialize the cache model data structures
 
@@ -183,21 +164,33 @@ void insert(head, tail, item)
 /************************************************************/
 void dump_settings()
 {
-  printf("*** CACHE SETTINGS ***\n");
-  if (cache_split) {
-    printf("  Split I- D-cache\n");
-    printf("  I-cache size: \t%d\n", cache_isize);
-    printf("  D-cache size: \t%d\n", cache_dsize);
-  } else {
-    printf("  Unified I- D-cache\n");
-    printf("  Size: \t%d\n", cache_usize);
-  }
-  printf("  Associativity: \t%d\n", cache_assoc);
-  printf("  Block size: \t%d\n", cache_block_size);
-  printf("  Write policy: \t%s\n", 
-	 cache_writeback ? "WRITE BACK" : "WRITE THROUGH");
-  printf("  Allocation policy: \t%s\n",
-	 cache_writealloc ? "WRITE ALLOCATE" : "WRITE NO ALLOCATE");
+	printf("--------------_Cache parameters------------------------------\n");
+	printf("\tCache Block size -> %d\n", cache_block_size);
+	printf("\tCache d size -> %d\n", cache_dsize);
+	printf("\tCache i size -> %d\n", cache_isize);
+	printf("\tCache u size -> %d\n", cache_usize);
+	printf("\tCache associativity -> %d\n", cache_assoc);
+	printf("\tCache words_per_block -> %d\n", cache_block_size/ 4);
+	printf("\tCache split -> %d\n", cache_split);
+	printf("\tCache writeback -> %d\n", cache_writeback);
+	printf("\tCache writealloc -> %d\n", cache_writealloc);
+  	
+	printf("*** CACHE SETTINGS ***\n");
+  	if (cache_split) 
+	{
+    	("  Split I- D-cache\n");
+    	("  I-cache size: \t%d\n", cache_isize);
+    	("  D-cache size: \t%d\n", cache_dsize);
+  	} 
+	else 
+	{
+		printf("  Unified I- D-cache\n");
+		printf("  Size: \t%d\n", cache_usize);
+  	}
+  	printf("  Associativity: \t%d\n", cache_assoc);
+  	printf("  Block size: \t%d\n", cache_block_size);
+  	printf("  Write policy: \t%s\n", cache_writeback ? "WRITE BACK" : "WRITE THROUGH");
+  	printf("  Allocation policy: \t%s\n", cache_writealloc ? "WRITE ALLOCATE" : "WRITE NO ALLOCATE");
 }
 /************************************************************/
 
