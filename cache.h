@@ -30,22 +30,26 @@
 
 /* structure definitions */
 typedef struct cache_line_ {
-  unsigned tag;
+  int tag;
   int dirty;
-  
+  char* data;
 } cache_line;
 
 typedef struct cache_ {
   int size;			/* cache size */
   int associativity;		/* cache associativity */
   int n_sets;			/* number of cache sets */
+  int block_size;
+  cache_line** cache_line_array;
   unsigned index_mask;		/* mask to find cache index */
   int index_mask_offset;	/* number of zero bits in mask */
-  Pcache_line *LRU_head;	/* head of LRU list for each set */
-  Pcache_line *LRU_tail;	/* tail of LRU list for each set */
-  int *set_contents;		/* number of valid entries in set */
-  int contents;			/* number of valid entries in cache */
-} cache, *Pcache;
+  
+  unsigned tag_mask;		/* mask to find cache index */
+  int tag_mask_offset;	/* number of zero bits in mask */
+  
+  // int *set_contents;		/* number of valid entries in set */
+  // int contents;			/* number of valid entries in cache */
+} cache;
 
 typedef struct cache_stat_ {
   int accesses;			/* number of memory references */
@@ -53,7 +57,7 @@ typedef struct cache_stat_ {
   int replacements;		/* number of misses that cause replacments */
   int demand_fetches;		/* number of fetches */
   int copies_back;		/* number of write backs */
-} cache_stat, *Pcache_stat;
+} cache_stat;
 
 
 /* function prototypes */
@@ -66,6 +70,7 @@ void insert();
 void dump_settings();
 void print_stats();
 
-
+static cache* my_cache;
+static cache_stat* my_cache_stat;
 /* macros */
 #define LOG2(x) ((int) rint((log((double) (x))) / (log(2.0))))

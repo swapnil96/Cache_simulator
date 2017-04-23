@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     parse_args(argc, argv);
     init_cache();
     play_trace(traceFile);
-    print_stats();
+    // print_stats();
 }
 
 
@@ -151,6 +151,7 @@ void play_trace(FILE* inFile)
 			case TRACE_DATA_LOAD:
 			case TRACE_DATA_STORE:
 			case TRACE_INST_LOAD:
+				// printf("lol  %d\n", addr);
       			perform_access(addr, access_type);
       			break;
 
