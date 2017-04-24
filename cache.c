@@ -42,8 +42,13 @@ static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
 // static Pcache icache;
 // static Pcache dcache;
 // static cache c1;
-static cache* my_cache;
-static cache_stat* my_cache_stat;
+// static cache* my_cache;
+
+static cache* my_cache_data;
+static cache* my_cache_instruction;
+
+static cache_stat* my_cache_stat_data;
+static cache_stat* my_cache_stat_instruction;
 // static cache_stat cache_stat_inst;
 // static cache_stat cache_stat_data;
 
@@ -98,13 +103,15 @@ void print_settings()
 {
 	printf("*** SET CACHE SETTINGS ***\n");
 
-  	printf("  Associativity: \t%d\n", my_cache->associativity);
-  	printf("  Block size: \t%d\n", my_cache->block_size);
-  	printf("  N_Sets: \t%d\n", my_cache->n_sets);
-  	printf("  Tag_mask: \t%d\n", my_cache->tag_mask);
-  	printf("  Tag_mask_offset: \t%d\n", my_cache->tag_mask_offset);
-	printf("  Index_mask: \t%d\n", my_cache->index_mask);
-  	printf("  Index_mask_offset: \t%d\n", my_cache->index_mask_offset);
+  	printf("  Associativity: \t%d\n", my_cache_data->associativity);
+  	printf("  Block size: \t%d\n", my_cache_data->block_size);
+  	printf("  N_Sets: \t%d\n", my_cache_data->n_sets);
+  	printf("  Tag_mask: \t%d\n", my_cache_data->tag_mask);
+  	printf("  Tag_mask_offset: \t%d\n", my_cache_data->tag_mask_offset);
+	printf("  Index_mask: \t%d\n", my_cache_data->index_mask);
+  	printf("  Index_mask_offset: \t%d\n", my_cache_data->index_mask_offset);
+  	printf("  Split: \t%d\n", cache_split);
+	  
 }
 
 
@@ -125,6 +132,7 @@ void init_cache()
 	int offset_bits;
 	int s_bits;
 	char* temp;
+
 	switch(cache_split)
 	{
 		case TRUE:
@@ -133,12 +141,11 @@ void init_cache()
 			my_cache_data->size = cache_dsize;
 			my_cache_data->associativity = cache_assoc;
 			my_cache_data->cache_line_array = (cache_line**)malloc(my_cache_data->n_sets * sizeof(cache_line*));
-			my_cache_data->associativity = cache_assoc;
 			my_cache_data->block_size = cache_block_size;
 			for (int i = 0; i < my_cache_data->n_sets; i++)
 			{
 				my_cache_data->cache_line_array[i] = (cache_line*)malloc(sizeof(cache_line));
-				my_cache_data->cache_line_array[i]->dirty = 0;
+				my_cache_data->cache_line_array[i]->dirty = -1;
 				my_cache_data->cache_line_array[i]->tag = -1;
 			}
 
@@ -160,6 +167,90 @@ void init_cache()
 			
 			my_cache_data->tag_mask = (int)bin_to_dec(temp);
 			my_cache_data->tag_mask_offset = 32 - s_bits;
+
+			/*Cache statistics data structures */	
+			my_cache_stat_data = (cache_stat*)malloc(sizeof(cache_stat));
+			my_cache_stat_data->accesses = 0;
+			my_cache_stat_data->misses = 0;
+			my_cache_stat_data->replacements = 0;
+			my_cache_stat_data->demand_fetches = 0;
+			my_cache_stat_data->copies_back = 0;
+
+
+			my_cache_instruction = (cache*)malloc(sizeof(cache));
+			my_cache_instruction->n_sets = cache_isize / cache_block_size;
+			my_cache_instruction->size = cache_isize;
+			my_cache_instruction->associativity = cache_assoc;
+			my_cache_instruction->cache_line_array = (cache_line**)malloc(my_cache_instruction->n_sets * sizeof(cache_line*));
+			my_cache_instruction->block_size = cache_block_size;
+			for (int i = 0; i < my_cache_instruction->n_sets; i++	)
+			{
+				my_cache_instruction->cache_line_array[i] = (cache_line*)malloc(sizeof(cache_line));
+				my_cache_instruction->cache_line_array[i]->dirty = -1;
+				my_cache_instruction->cache_line_array[i]->tag = -1;
+			}
+
+			// Calculating index_mask and offset
+			offset_bits = LOG2(my_cache_instruction->block_size);
+			s_bits = LOG2(my_cache_instruction->size);
+
+			temp = strdup("00000000000000000000000000000000");
+			for(int i = 32 - s_bits; i < 32 - offset_bits; i++)
+				temp[i] = '1';
+			
+			my_cache_instruction->index_mask = (int)bin_to_dec(temp);
+			my_cache_instruction->index_mask_offset = offset_bits;
+
+			// Calculating tag_mask and offset
+			temp = strdup("00000000000000000000000000000000");
+			for(int i = 0; i < 32 - s_bits; i++)
+				temp[i] = '1';
+			
+			my_cache_instruction->tag_mask = (int)bin_to_dec(temp);
+			my_cache_instruction->tag_mask_offset = 32 - s_bits;
+
+			/*Cache statistics data structures */	
+			my_cache_stat_instruction = (cache_stat*)malloc(sizeof(cache_stat));
+			my_cache_stat_instruction->accesses = 0;
+			my_cache_stat_instruction->misses = 0;
+			my_cache_stat_instruction->replacements = 0;
+			my_cache_stat_instruction->demand_fetches = 0;
+			my_cache_stat_instruction->copies_back = 0;
+			break;
+		
+		case FALSE:
+			my_cache_data = (cache*)malloc(sizeof(cache));
+			my_cache_data->n_sets = cache_usize / cache_block_size;
+			my_cache_data->size = cache_usize;
+			my_cache_data->associativity = cache_assoc;
+			my_cache_data->cache_line_array = (cache_line**)malloc(my_cache_data->n_sets * sizeof(cache_line*));
+			my_cache_data->block_size = cache_block_size;
+			for (int i = 0; i < my_cache_data->n_sets; i++)
+			{
+				my_cache_data->cache_line_array[i] = (cache_line*)malloc(sizeof(cache_line));
+				my_cache_data->cache_line_array[i]->dirty = -1;
+				my_cache_data->cache_line_array[i]->tag = -1;
+			}
+
+			// Calculating index_mask and offset
+			offset_bits = LOG2(my_cache_data->block_size);
+			s_bits = LOG2(my_cache_data->size);
+
+			temp = strdup("00000000000000000000000000000000");
+			for(int i = 32 - s_bits; i < 32 - offset_bits; i++)
+				temp[i] = '1';
+			
+			my_cache_data->index_mask = (int)bin_to_dec(temp);
+			my_cache_data->index_mask_offset = offset_bits;
+
+			// Calculating tag_mask and offset
+			temp = strdup("00000000000000000000000000000000");
+			for(int i = 0; i < 32 - s_bits; i++)
+				temp[i] = '1';
+			
+			my_cache_data->tag_mask = (int)bin_to_dec(temp);
+			my_cache_data->tag_mask_offset = s_bits;
+			printf("s_bits  %d\n", s_bits);
 			print_settings();
 
 			/*Cache statistics data structures */	
@@ -169,52 +260,33 @@ void init_cache()
 			my_cache_stat_data->replacements = 0;
 			my_cache_stat_data->demand_fetches = 0;
 			my_cache_stat_data->copies_back = 0;
-			break;
 
-		case FALSE:
-			my_cache = (cache*)malloc(sizeof(cache));
-			my_cache->n_sets = cache_usize / cache_block_size;
-			my_cache->size = cache_usize;
-			my_cache->associativity = cache_assoc;
-			my_cache->cache_line_array = (cache_line**)malloc(my_cache->n_sets * sizeof(cache_line*));
-			my_cache->associativity = cache_assoc;
-			my_cache->block_size = cache_block_size;
-			for (int i = 0; i < my_cache->n_sets; i++)
-			{
-				my_cache->cache_line_array[i] = (cache_line*)malloc(sizeof(cache_line));
-				my_cache->cache_line_array[i]->dirty = 0;
-				my_cache->cache_line_array[i]->tag = -1;
-			}
 
-			// Calculating index_mask and offset
-			offset_bits = LOG2(my_cache->block_size);
-			s_bits = LOG2(my_cache->size);
+			// my_cache_instruction = (cache*)malloc(sizeof(cache));
+			// my_cache_instruction->n_sets = 0;
+			// my_cache_instruction->size = 0;
+			// my_cache_instruction->associativity = 0;
+			// my_cache_instruction->block_size = 0;
 
-			temp = strdup("00000000000000000000000000000000");
-			for(int i = 32 - s_bits; i < 32 - offset_bits; i++)
-				temp[i] = '1';
-			
-			my_cache->index_mask = (int)bin_to_dec(temp);
-			my_cache->index_mask_offset = offset_bits;
+			// my_cache_instruction->index_mask = 0;
+			// my_cache_instruction->index_mask_offset = 0;
 
 			// Calculating tag_mask and offset
-			temp = strdup("00000000000000000000000000000000");
-			for(int i = 0; i < 32 - s_bits; i++)
-				temp[i] = '1';
-			
-			my_cache->tag_mask = (int)bin_to_dec(temp);
-			my_cache->tag_mask_offset = 32 - s_bits;
-			print_settings();
+			// my_cache_instruction->tag_mask = 0;
+			// my_cache_instruction->tag_mask_offset = 0;
 
 			/*Cache statistics data structures */	
-			my_cache_stat = (cache_stat*)malloc(sizeof(cache_stat));
-			my_cache_stat->accesses = 0;
-			my_cache_stat->misses = 0;
-			my_cache_stat->replacements = 0;
-			my_cache_stat->demand_fetches = 0;
-			my_cache_stat->copies_back = 0;
+			my_cache_stat_instruction = (cache_stat*)malloc(sizeof(cache_stat));
+			my_cache_stat_instruction->accesses = 0;
+			my_cache_stat_instruction->misses = 0;
+			my_cache_stat_instruction->replacements = 0;
+			my_cache_stat_instruction->demand_fetches = 0;
+			my_cache_stat_instruction->copies_back = 0;
 			break;
 	}
+
+	
+	
 }
 /************************************************************/
 
@@ -225,65 +297,148 @@ void perform_access(unsigned addr, unsigned access_type)
 {
 	/* handle an access to the cache */
 
-	// int offset_bits = LOG2(my_cache->block_size);
-	// int s_bits = LOG2(my_cache->size);
-	// int index_bits = s_bits - offset_bits; 
-	// int block_number = addr >> LOG2(my_cache->block_size);
-	// int memory_number = block_number * my_cache->block_size;
+	printf("%d   %d\n", addr, access_type);
 
-	int index = (addr & my_cache->index_mask) >> my_cache->index_mask_offset;
+	int tag, index;
 
-	int tag = (addr & my_cache->tag_mask) >> my_cache->tag_mask_offset;
-
-	cache_line* temp = my_cache->cache_line_array[index];
-
-	my_cache_stat->accesses++;
-
-	printf("%d  %d\n", tag, temp->tag);
-	if (tag == temp->tag)
+	switch(cache_split)
 	{
-		switch(access_type)
-		{
-			case 0:
-				// TO_do in case of integration with memory
-				break;
-			case 1:
-				if (temp->dirty == 0)
+		case TRUE:
+
+			break;
+
+		case FALSE:
+			index = (addr & my_cache_data->index_mask) >> my_cache_data->index_mask_offset;
+
+			tag = (addr & my_cache_data->tag_mask) >> my_cache_data->tag_mask_offset;
+
+			cache_line* temp = my_cache_data->cache_line_array[index];
+
+			printf("\tAddr -> %d    Tags -> %d   Line_tag  -> %d  Index -> %d  Dirty -> %d \n", addr, tag, temp->tag, index, temp->dirty);
+
+			if (tag == temp->tag)
+			{
+				switch(access_type)
 				{
+					case 0:
 						
-				}
-				else
+						if (temp->dirty == 0)
+						{
+
+						}	
+						else if (temp->dirty == 1)
+						{
+
+						}	
+						else
+						{
+							temp->dirty = 0;
+						}
+						my_cache_stat_data->accesses++;	
+						break;
+					case 1:
+						if (temp->dirty == 0)
+						{
+
+							// my_cache_stat_data->replacements++;
+						}	
+						else if (temp->dirty == 1)
+						{
+							// my_cache_stat_data->replacements++;
+						}	
+						else
+						{
+							temp->dirty = 0;
+						}
+						my_cache_stat_data->accesses++;			
+						temp->dirty = 1;
+						break;
+					case 2:
+						if (temp->dirty == 0)
+						{
+
+						}	
+						else if (temp->dirty == 1)
+						{
+
+						}	
+						else
+						{
+							temp->dirty = 0;
+						}
+						my_cache_stat_instruction->accesses++;
+						break;
+				}		
+			}
+			else
+			{
+				switch(access_type)
 				{
-					my_cache_stat->replacements++;
+					case 0:
+						if (temp->dirty == 0)
+						{
+							my_cache_stat_data->replacements++;
+						}
+						else if (temp->dirty == 1)
+						{
+							my_cache_stat_data->copies_back += my_cache_data->block_size / 4;
+							my_cache_stat_data->replacements++;
+						}
+						else
+						{
+							temp->dirty = 0;
+						}
+						my_cache_stat_data->demand_fetches += my_cache_data->block_size / 4;
+						my_cache_stat_data->accesses++;
+						my_cache_stat_data->misses++;
+						break;
+					
+					case 1:
+						if (temp->dirty == 0)
+						{
+
+							my_cache_stat_data->replacements++;
+						}
+						else if (temp->dirty == 1)
+						{
+							my_cache_stat_data->copies_back += my_cache_data->block_size / 4;
+							my_cache_stat_data->replacements++;
+						}
+						else
+						{
+							temp->dirty = 0;
+						}
+						my_cache_stat_data->accesses++;	
+						temp->dirty = 1;		
+						my_cache_stat_data->misses++;
+						break;
+
+					case 2:
+						if (temp->dirty == 0)
+						{
+							my_cache_stat_instruction->replacements++;
+						}	
+						else if (temp->dirty == 1)
+						{
+							my_cache_stat_instruction->replacements++;
+
+						}	
+						else
+						{
+							temp->dirty = 0;
+						}
+						my_cache_stat_instruction->accesses++;
+						my_cache_stat_instruction->misses++;
+						my_cache_stat_instruction->demand_fetches += my_cache_data->block_size / 4;							
+						break;
 				}
-				break;
-			case 2:
+				temp->tag = tag;
+			}
 
-				break;
-		}		
-	}
-	else
-	{
-		my_cache_stat->misses++;
-		temp->dirty = 1;
-		temp->tag = tag;
-		printf("lolololo\n");
-		switch(access_type)
-		{
-			case 0:
-				my_cache_stat->misses++;
-				break;
-			
-			case 1:
-
-				break;
-
-			case 2:
-
-				break;
-		}
+			break;
 	}
 
+	printf("Updating %d\n", my_cache_stat_data->replacements);
 }
 /************************************************************/
 
@@ -291,16 +446,16 @@ void perform_access(unsigned addr, unsigned access_type)
 void flush()
 {
 	/* flush the cache */
-
 	cache_line* temp;
-	for(int i = 0; i < my_cache->n_sets; i++)
+	for(int i = 0; i < my_cache_data->n_sets; i++)
 	{
-		temp = my_cache->cache_line_array[i];
+		temp = my_cache_data->cache_line_array[i];
 
 		if (temp->dirty == 1)
 		{
-			continue;
 			temp->dirty = 0;
+			my_cache_stat_data->copies_back += my_cache_data->block_size / 4;
+			continue;
 		}
 
 	}
@@ -311,17 +466,6 @@ void flush()
 /************************************************************/
 void dump_settings()
 {
-	printf("--------------_Cache parameters------------------------------\n");
-	printf("\tCache Block size -> %d\n", cache_block_size);
-	printf("\tCache d size -> %d\n", cache_dsize);
-	printf("\tCache i size -> %d\n", cache_isize);
-	printf("\tCache u size -> %d\n", cache_usize);
-	printf("\tCache associativity -> %d\n", cache_assoc);
-	printf("\tCache words_per_block -> %d\n", cache_block_size/ 4);
-	printf("\tCache split -> %d\n", cache_split);
-	printf("\tCache writeback -> %d\n", cache_writeback);
-	printf("\tCache writealloc -> %d\n", cache_writealloc);
-  	
 	printf("*** CACHE SETTINGS ***\n");
   	if (cache_split) 
 	{
@@ -347,34 +491,34 @@ void print_stats()
 	printf("\n*** CACHE STATISTICS ***\n");
 
   	printf(" INSTRUCTIONS\n");
-  	printf("  accesses:  %d\n", my_cache_stat->accesses);
-  	printf("  misses:    %d\n", my_cache_stat->misses);
-  	if (!my_cache_stat->accesses)
+  	printf("  accesses:  %d\n", my_cache_stat_instruction->accesses);
+  	printf("  misses:    %d\n", my_cache_stat_instruction->misses);
+  	if (!my_cache_stat_instruction->accesses)
     	printf("  miss rate: 0 (0)\n"); 
   	else
     {
-		printf("  miss rate: %2.4f (hit rate %2.4f)\n", (float)my_cache_stat->misses / (float)my_cache_stat->accesses,
-	 	1.0 - (float)my_cache_stat->misses / (float)my_cache_stat->accesses);
+		printf("  miss rate: %2.4f (hit rate %2.4f)\n", (float)my_cache_stat_instruction->misses / (float)my_cache_stat_instruction->accesses,
+	 	1.0 - (float)my_cache_stat_instruction->misses / (float)my_cache_stat_instruction->accesses);
   	}
-	printf("  replace:   %d\n", my_cache_stat->replacements);
+	printf("  replace:   %d\n", my_cache_stat_instruction->replacements);
 
   	printf(" DATA\n");
-  	printf("  accesses:  %d\n", my_cache_stat->accesses);
-  	printf("  misses:    %d\n", my_cache_stat->misses);
-  	if (!my_cache_stat->accesses)
+  	printf("  accesses:  %d\n", my_cache_stat_data->accesses);
+  	printf("  misses:    %d\n", my_cache_stat_data->misses);
+  	if (!my_cache_stat_data->accesses)
     	printf("  miss rate: 0 (0)\n"); 
   	
 	else
     {
-		printf("  miss rate: %2.4f (hit rate %2.4f)\n", (float)my_cache_stat->misses / (float)my_cache_stat->accesses,
-	 	1.0 - (float)my_cache_stat->misses / (float)my_cache_stat->accesses);
+		printf("  miss rate: %2.4f (hit rate %2.4f)\n", (float)my_cache_stat_data->misses / (float)my_cache_stat_data->accesses,
+	 	1.0 - (float)my_cache_stat_data->misses / (float)my_cache_stat_data->accesses);
   	}
-	printf("  replace:   %d\n", my_cache_stat->replacements);
+	printf("  replace:   %d\n", my_cache_stat_data->replacements);
   	
   	printf(" TRAFFIC (in words)\n");
-  	printf("  demand fetch:  %d\n", my_cache_stat->demand_fetches + 
-	my_cache_stat->demand_fetches);
-  	printf("  copies back:   %d\n", my_cache_stat->copies_back +
-	my_cache_stat->copies_back);
+  	printf("  demand fetch:  %d\n", my_cache_stat_instruction->demand_fetches + 
+	my_cache_stat_data->demand_fetches);
+  	printf("  copies back:   %d\n", my_cache_stat_instruction->copies_back +
+	my_cache_stat_data->copies_back);
 }
 /************************************************************/

@@ -21,7 +21,6 @@ int main(int argc, char **argv)
     print_stats();
 }
 
-
 /************************************************************/
 void parse_args(int argc, char **argv)
 {
@@ -151,7 +150,6 @@ void play_trace(FILE* inFile)
 			case TRACE_DATA_LOAD:
 			case TRACE_DATA_STORE:
 			case TRACE_INST_LOAD:
-				// printf("lol  %d\n", addr);
       			perform_access(addr, access_type);
       			break;
 

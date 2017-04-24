@@ -55,8 +55,8 @@ typedef struct cache_stat_ {
   int accesses;			/* number of memory references */
   int misses;			/* number of cache misses */
   int replacements;		/* number of misses that cause replacments */
-  int demand_fetches;		/* number of fetches */
-  int copies_back;		/* number of write backs */
+  int demand_fetches;		/* number of fetches in words from memory */
+  int copies_back;		/* number of write backs in words to memory */
 } cache_stat;
 
 
@@ -69,11 +69,11 @@ void dump_settings();
 void print_stats();
 
 
-static cache* my_cache;
+// static cache* my_cache;
 static cache* my_cache_data;
 static cache* my_cache_instruction;
 
-static cache_stat* my_cache_stat;
+// static cache_stat* my_cache_stat;
 static cache_stat* my_cache_stat_data;
 static cache_stat* my_cache_stat_instruction;
 /* macros */

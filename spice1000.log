@@ -1,0 +1,30 @@
+*** CACHE SETTINGS ***
+  Unified I- D-cache
+  Size: 	8192
+  Associativity: 	1
+  Block size: 	16
+  Write policy: 	WRITE BACK
+  Allocation policy: 	WRITE ALLOCATE
+*** SET CACHE SETTINGS ***
+  Associativity: 	1
+  Block size: 	16
+  N_Sets: 	512
+  Tag_mask: 	-8192
+  Tag_mask_offset: 	19
+  Index_mask: 	8176
+  Index_mask_offset: 	4
+
+*** CACHE STATISTICS ***
+ INSTRUCTIONS
+  accesses:  0
+  misses:    0
+  miss rate: 0 (0)
+  replace:   0
+ DATA
+  accesses:  1000
+  misses:    50
+  miss rate: 0.0500 (hit rate 0.9500)
+  replace:   65
+ TRAFFIC (in words)
+  demand fetch:  104
+  copies back:   0
