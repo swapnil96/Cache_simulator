@@ -1,0 +1,25 @@
+--------------_Cache parameters------------------------------
+	Cache Block size -> 16
+	Cache d size -> 8192
+	Cache i size -> 8192
+	Cache u size -> 8192
+	Cache associativity -> 1
+	Cache words_per_block -> 4
+	Cache split -> 0
+	Cache writeback -> 1
+	Cache writealloc -> 1
+*** CACHE SETTINGS ***
+  Unified I- D-cache
+  Size: 	8192
+  Associativity: 	1
+  Block size: 	16
+  Write policy: 	WRITE BACK
+  Allocation policy: 	WRITE ALLOCATE
+*** SET CACHE SETTINGS ***
+  Associativity: 	1
+  Block size: 	16
+  N_Sets: 	512
+  Tag_mask: 	-8192
+  Tag_mask_offset: 	19
+  Index_mask: 	8176
+  Index_mask_offset: 	4

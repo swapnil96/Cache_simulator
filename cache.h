@@ -65,12 +65,16 @@ void set_cache_param();
 void init_cache();
 void perform_access();
 void flush();
-void delete();
-void insert();
 void dump_settings();
 void print_stats();
 
+
 static cache* my_cache;
+static cache* my_cache_data;
+static cache* my_cache_instruction;
+
 static cache_stat* my_cache_stat;
+static cache_stat* my_cache_stat_data;
+static cache_stat* my_cache_stat_instruction;
 /* macros */
 #define LOG2(x) ((int) rint((log((double) (x))) / (log(2.0))))
