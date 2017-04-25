@@ -29,14 +29,24 @@
 
 /* cache configuration parameters */
 static int cache_split = 0;
-static int cache_usize = DEFAULT_CACHE_SIZE;
-static int cache_isize = DEFAULT_CACHE_SIZE; 
-static int cache_dsize = DEFAULT_CACHE_SIZE;
-static int cache_block_size = DEFAULT_CACHE_BLOCK_SIZE;
-static int words_per_block = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
-static int cache_assoc = DEFAULT_CACHE_ASSOC;
-static int cache_writeback = DEFAULT_CACHE_WRITEBACK;
-static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
+static int cache_size_i = DEFAULT_CACHE_SIZE;
+static int cache_size_u = DEFAULT_CACHE_SIZE; 
+static int cache_size_d = DEFAULT_CACHE_SIZE;
+static int cache_block_size_u = DEFAULT_CACHE_BLOCK_SIZE;
+static int cache_block_size_i = DEFAULT_CACHE_BLOCK_SIZE;
+static int cache_block_size_d = DEFAULT_CACHE_BLOCK_SIZE;
+static int words_per_block_u = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
+static int words_per_block_i = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
+static int words_per_block_d = DEFAULT_CACHE_BLOCK_SIZE / WORD_SIZE;
+static int cache_assoc_u = DEFAULT_CACHE_ASSOC;
+static int cache_assoc_i = DEFAULT_CACHE_ASSOC;
+static int cache_assoc_d = DEFAULT_CACHE_ASSOC;
+static int cache_writeback_u = DEFAULT_CACHE_WRITEBACK;
+static int cache_writeback_i = DEFAULT_CACHE_WRITEBACK;
+static int cache_writeback_d = DEFAULT_CACHE_WRITEBACK;
+static int cache_writealloc_u = DEFAULT_CACHE_WRITEALLOC;
+static int cache_writealloc_i = DEFAULT_CACHE_WRITEALLOC;
+static int cache_writealloc_d = DEFAULT_CACHE_WRITEALLOC;
 
 /* cache model data structures */
 // static Pcache icache;
@@ -44,11 +54,13 @@ static int cache_writealloc = DEFAULT_CACHE_WRITEALLOC;
 // static cache c1;
 // static cache* my_cache;
 
-static cache* my_cache_data;
-static cache* my_cache_instruction;
+static cache* my_cache_u;
+static cache* my_cache_d;
+static cache* my_cache_i;
 
-static cache_stat* my_cache_stat_data;
-static cache_stat* my_cache_stat_instruction;
+static cache_stat* my_cache_stat_u;
+static cache_stat* my_cache_stat_d;
+static cache_stat* my_cache_stat_i;
 // static cache_stat cache_stat_inst;
 // static cache_stat cache_stat_data;
 
