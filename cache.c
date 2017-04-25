@@ -408,6 +408,7 @@ void perform_access(unsigned addr, unsigned access_type)
 						{
 							temp->dirty = 0;
 						}
+						my_cache_stat_data->demand_fetches += my_cache_data->block_size / 4;
 						my_cache_stat_data->accesses++;	
 						temp->dirty = 1;		
 						my_cache_stat_data->misses++;
