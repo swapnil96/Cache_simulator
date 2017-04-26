@@ -9,12 +9,9 @@ extern YYSTYPE yyltype;
 #define YYSTYPE int
 %}
 %%
-[ \t\n]                                                    {}
-[a-z0-9]+                                                   {if(strlen(yytext) == 8)
-                                                                {yylval.str = yytext; return DATA;}
-                                                             else
-                                                                printf("Error\n");
-                                                            }
+[ \t\n]                                                     {}
+[a-z0-9]+                                                   {yylval.str = yytext; return DATA;}
+.                                                           {}
 <<EOF>>                                                     {return EOI; exit(0);}
 %%
 int yywrap()

@@ -1,0 +1,73 @@
+<g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Layer 3"
+     style="display:inline">
+    <rect
+       style="fill:#0064ff;fill-opacity:1;stroke:none;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1742"
+       width="59.266663"
+       height="173.56667"
+       x="1131.1608"
+       y="287.85403" />
+    <rect
+       style="fill:#0064ff;fill-opacity:1;stroke:none;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1744"
+       width="59.266663"
+       height="173.56667"
+       x="1190.4275"
+       y="287.85403" />
+    <g
+       id="g1758">
+      <rect
+         y="193.82253"
+         x="1298.8939"
+         height="389.36438"
+         width="14.699768"
+         id="rect1746"
+         style="fill:#0064ff;fill-opacity:1;stroke:none;stroke-width:2.5497005;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         y="168.00063"
+         x="1033.6433"
+         height="415.39661"
+         width="13.513184"
+         id="rect1739"
+         style="display:inline;fill:#0064ff;fill-opacity:1;stroke:none;stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+    <g
+       transform="translate(0,403)"
+       style="display:inline"
+       id="g5353">
+      <g
+         transform="matrix(0.54149493,0,0,1,986.35047,0.44600598)"
+         style="stroke-width:1.25;stroke-miterlimit:4;stroke-dasharray:none"
+         id="g4416-1">
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 85.724999,-370.80833 v 15.24305"
+           id="path4394-2"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 85.724999,-363.1868 H 582.96828"
+           id="path4396-7"
+           inkscape:connector-curvature="0" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 583.10057,-370.67603 v 15.24305"
+           id="path4394-3-0"
+           inkscape:connector-curvature="0" />
+      </g>
+      <text
+         id="text5285-20"
+         y="-371.73962"
+         x="1147.1171"
+         style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:red;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="stroke-width:0.26458332"
+           y="-371.73962"
+           x="1147.1171"
+           id="tspan5283-2"
+           sodipodi:role="line">MEM Stage</tspan></text>
+    </g>
+  </g>

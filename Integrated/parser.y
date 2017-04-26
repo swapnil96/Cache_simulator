@@ -9,6 +9,7 @@ int number;
 int yyerror(char *);
 int yylex();
 FILE *output;
+char* cfg;
 char* output_name;
 char* output_result_name;
 int no_inputs;
@@ -20,8 +21,6 @@ int no_inputs;
 %token EOI
 %token <str> DATA
 %type <str> exprn
-%start solv
-%start cfg
 %%
 solv:
 |solv exprn EOI                                 {make_processor();exit(0);}
@@ -29,31 +28,22 @@ solv:
 exprn: DATA                                     {instruction* instr = make_instruction($1); add_instruction(instr);}
 | exprn DATA                                    {instruction* instr = make_instruction($2); add_instruction(instr);}                
 ;
-cfg:
-| cfg data EOF                                  { return 1; }
-;
-data:
-| 
-
 %%
 int main(int argc, char **argv)
 {
     number = 0;
-    if (argc < 3)
+    if (argc < 5)
     {   
         printf("Error: Too few arguments.\n");
         exit(0);
     }
-    if (argc == 3)
-    {
-        printf("Only inputs for part 1.\n");
-    }
-    if (argc == 4)
-        output_result_name = strdup(argv[3]);
-    
+    cfg = strdup(argv[2]);
+    read_cfg();
+    output_result_name = strdup(argv[4]);
+
     no_inputs = argc - 1;
-    output_name = strdup(argv[2]);
-    output = fopen(argv[2], "w");
+    output_name = strdup(argv[3]);
+    output = fopen(argv[3], "w");
     yyin = fopen(argv[1], "r");
     yyparse();
     fclose(yyin);
