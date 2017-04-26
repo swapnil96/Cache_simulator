@@ -44,7 +44,7 @@ void write_svg(char* name)
     fclose(from);
 }
 
-void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I3, char* I4, char* I5)
+void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I3, char* I4, char* I5, int T1, int T2, int T3, int T4, int T5)
 {
     remove(output_name);
     write_svg("start.svg");
@@ -104,8 +104,50 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
     write_svg( "I_5");
     alpha = fopen(output_name,"a");    
     fprintf(alpha, "%s", I5);
-    fprintf(alpha, "</tspan></text></g></svg>\n");
-    // fprintf(alpha, "</g></svg>\n");
+    fprintf(alpha, "</tspan></text></g>\n");
+    fclose(alpha);
+
+    write_svg( "T_1");
+    alpha = fopen(output_name,"a");
+    if(T1 == 0)
+        fprintf(alpha, "Active");
+    else
+        fprintf(alpha, "Inactive");
+    fclose(alpha);
+
+    write_svg( "T_2");
+    alpha = fopen(output_name,"a");
+    if(T2 == 0)
+        fprintf(alpha, "Active");
+    else
+        fprintf(alpha, "Inactive");
+    fclose(alpha);
+
+    write_svg( "T_3");
+    alpha = fopen(output_name,"a");
+    if(T3 == 0)
+        fprintf(alpha, "Active");
+    else
+        fprintf(alpha, "Inactive");
+    fclose(alpha);
+
+    write_svg( "T_4");
+    alpha = fopen(output_name,"a");
+    if(T4 == 0)
+        fprintf(alpha, "Active");
+    else
+        fprintf(alpha, "Inactive");
+    fclose(alpha);
+
+    write_svg( "T_5");
+    alpha = fopen(output_name,"a");
+    if(T5 == 0)
+        fprintf(alpha, "Active");
+    else
+        fprintf(alpha, "Inactive");
+    
+    fprintf(alpha, "</tspan></text></g></g></svg>\n");
+
     fclose(alpha);
 
 }
