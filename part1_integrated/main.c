@@ -65,6 +65,11 @@ int rise_memory;
 int rise_write_back;
 int stall;
 int no_controller = 0;
+int fetch_done = 1;
+int decode_done = 1;
+int execute_done = 1;
+int mem_done = 1;
+int write_done = 1;
 
 // Functions
 void update()
@@ -182,8 +187,7 @@ void* clock_function(void* args)
         c = strdup(print_ins(print_instruction_array[3]));
         d = strdup(print_ins(print_instruction_array[4])); 
         e = strdup(print_ins(print_instruction_array[5]));
-        build_svg(svg_array[0],svg_array[1],svg_array[2],svg_array[3],svg_array[4], a, b, c, d, e);
-
+        build_svg(svg_array[0],svg_array[1],svg_array[2],svg_array[3],svg_array[4], a, b, c, d, e, fetch_done, decode_done, execute_done, mem_done, write_done);
 
         if ((strcmp("step", pch) == 0) || run_flag == 1 || continue_flag == 1)
         {
@@ -375,15 +379,20 @@ void* fetch_function(void* args)
     int idx =   0;
     while(end != 1)
     {
+        if(done != 1) fetch_done = 0;
         sleep(0.5);
         idx = ((int)bin_to_dec(register_array[34]->value) - 4194304)/4;
         if(rise_fetch == 0)
         {
             done = 0;
+            fetch_done = 1;
             continue;
         }
         if(done == 1)
+        {
+            fetch_done = 1;
             continue;
+        }
         if(PC_SRC == 1) register_array[34]->value = strdup(pc_branch_addr);
         if(idx >= number)
         {

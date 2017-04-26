@@ -165,7 +165,7 @@ void print_p_2(pipeline_register_2* p2);
 void print_p_3(pipeline_register_3* p3);
 void print_p_4(pipeline_register_4* p4);
 void write_svg(char* name);
-void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I3, char* I4, char* I5);
+void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I3, char* I4, char* I5, int T1, int T2, int T3, int T4, int T5);
 char* print_ins(instruction* ins);
 void print_result_file(int cycles, int ins, int idle_cycles);
 
