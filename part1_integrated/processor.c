@@ -109,7 +109,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 
     write_svg("SVG/T_1");
     alpha = fopen(output_name,"a");
-    if(T1 == 0)
+    if(T1 == 1)
         fprintf(alpha, "Active");
     else
         fprintf(alpha, "Inactive");
@@ -117,7 +117,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 
     write_svg("SVG/T_2");
     alpha = fopen(output_name,"a");
-    if(T2 == 0)
+    if(T2 == 1)
         fprintf(alpha, "Active");
     else
         fprintf(alpha, "Inactive");
@@ -125,7 +125,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 
     write_svg("SVG/T_3");
     alpha = fopen(output_name,"a");
-    if(T3 == 0)
+    if(T3 == 1)
         fprintf(alpha, "Active");
     else
         fprintf(alpha, "Inactive");
@@ -133,7 +133,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 
     write_svg("SVG/T_4");
     alpha = fopen(output_name,"a");
-    if(T4 == 0)
+    if(T4 == 1)
         fprintf(alpha, "Active");
     else
         fprintf(alpha, "Inactive");
@@ -141,7 +141,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 
     write_svg("SVG/T_5");
     alpha = fopen(output_name,"a");
-    if(T5 == 0)
+    if(T5 == 1)
         fprintf(alpha, "Active");
     else
         fprintf(alpha, "Inactive");
