@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include "processor.h"
+#include "cache.h"
 
 void store_multiply(double a);
 void store_multiply_add(double a);

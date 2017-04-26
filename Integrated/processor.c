@@ -4,7 +4,6 @@
 #include <math.h>
 #include "processor.h"
 #include "cache.h"
-
 // Global variables
 int number;
 instruction* instruction_array[20000];
@@ -111,7 +110,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 
 }
 
-void print_result_file(int cycles, int ins, int idle_cycles)
+void print_result_file(int cycles, int ins,int idle_cycles)
 {
     remove(output_result_name);
     FILE* write = fopen(output_name,"w");
@@ -595,6 +594,15 @@ instruction* make_instruction(char* data)
     if(strcmp("000000", temp1) == 0 && strcmp("100001", temp) == 0)   //Move                                  Move rdest(=Rd), rsrc(=Rt)
         flag = 1, ins->type = 29;
 
+    if(strcmp("000000", temp1) == 0 && strcmp("101010",temp) == 0)    //Set less than                         slt rd, rs, rt
+        flag = 1, ins->type = 30;
+
+    if(strcmp("001001", temp1) == 0)               //Addition Immediate (without overflow)                    addiu rt, rs, imm
+        flag = 1, ins->type = 31;
+
+    if(strcmp("000101", temp1) == 0)               //Branch on not equal                                      bne rs, rt, label
+        flag = 1, ins->type = 32;
+
     if (flag == 1)
     {
         ins->Rd = strdup(slice(bin+16, 5));
@@ -1014,6 +1022,8 @@ void make_processor()
     make_pipeline_registers();
     start();
 }
+
+
 
 void read_cfg()
 {

@@ -1,53 +1,59 @@
 
 // Arithmetic and Logical Instructions
 
-// 1)  Addition (with overflow)             add rd, rs, rt
-// 2)  Addition immediate (with overflow)   addi rt, rs, imm
-// 3)  AND                                  and rd, rs, rt
-// 4)  Multiply                             mult rs, rt
-// 5)  Multiply add                         madd rs, rt
-// 6)  NOR                                  nor rd, rs, rt
-// 7)  OR                                   or rd, rs, rt
-// 8)  OR immediate                         ori rt, rs, imm
-// 9)  Shift left logical                   sll rd, rt, shamt
-// 10) Shift left logical variable          sllv rd, rt, rs
-// 11) Subtract (with overflow)             sub rd, rs, rt
+// 1)  Addition (with overflow)                         add rd, rs, rt
+// 2)  Addition immediate (with overflow)               addi rt, rs, imm
+// 3)  AND                                              and rd, rs, rt
+// 4)  Multiply                                         mult rs, rt
+// 5)  Multiply add                                     madd rs, rt
+// 6)  NOR                                              nor rd, rs, rt
+// 7)  OR                                               or rd, rs, rt
+// 8)  OR immediate                                     ori rt, rs, imm
+// 9)  Shift left logical                               sll rd, rt, shamt
+// 10) Shift left logical variable                      sllv rd, rt, rs
+// 11) Subtract (with overflow)                         sub rd, rs, rt
 
 // Constant-Manipulating Instructions
 
-// 12) Load upper immediate                lui rt, imm
+// 12) Load upper immediate                             lui rt, imm
 
 // Comparison Instructions
 
-// 13) Set less than unsigned              sltu rd, rs, rt
-// 14) Set less than immediate             slti rt, rs, imm
+// 13) Set less than unsigned                           sltu rd, rs, rt
+// 14) Set less than immediate                          slti rt, rs, imm
 
 // Branch Instructions
 
-// 15) Branch on equal                     beq rs, rt, label
-// 16) Branch on greater than equal zero   bgez rs, label
-// 17) Branch on greater than zero         bgtz rs, label
-// 18) Branch on less than equal zero      blez rs, label
-// 19) Branch on less than zero            bltz rs, label
+// 15) Branch on equal                                  beq rs, rt, label
+// 16) Branch on greater than equal zero                bgez rs, label
+// 17) Branch on greater than zero                      bgtz rs, label
+// 18) Branch on less than equal zero                   blez rs, label
+// 19) Branch on less than zero                         bltz rs, label
 
 // Load/Store Instructions
 
-// 20) Load byte                           lb rt, address
-// 21) Load word                           lw rt, address
-// 22) Store byte                          sb rt, address
-// 23) Store word                          sw rt, address
+// 20) Load byte                                        lb rt, address
+// 21) Load word                                        lw rt, address
+// 22) Store byte                                       sb rt, address
+// 23) Store word                                       sw rt, address
 
 // Jump Instructions
 
-// 24) Jump                                j target
-// 25) Jump and link                       jal target
-// 26) Jump and link register              jalr rs, rd
-// 27) Jump register                       jr rs
+// 24) Jump                                             j target
+// 25) Jump and link                                    jal target
+// 26) Jump and link register                           jalr rs, rd
+// 27) Jump register                                    jr rs
 
 // Data Movement
 
-// 28) Move from lo                        mflo rd
-// 29) Move                                move rdest(=Rd), rsrc (=Rt)
+// 28) Move from lo                                     mflo rd
+// 29) Move                                             move rdest(=Rd), rsrc (=Rt)
+
+// Extra Instructions
+
+// 30) Set less than                                    slt rd, rs, rt
+// 31) Addition Immediate (without overflow)            addiu rt, rs, imm
+// 32) Branch on not equal                              bne rs, rt, label
 
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
@@ -138,7 +144,7 @@ typedef struct pipeline_register_4
     int MEM_TO_REG;
 }pipeline_register_4;
 
-void read_cfg();
+
 void add_instruction(instruction* data);
 instruction* make_instruction(char* data);
 void make_processor();
@@ -163,6 +169,7 @@ void build_svg(int iff,int id,int ex,int mem,int wb, char* I1, char* I2, char* I
 char* print_ins(instruction* ins);
 void print_result_file(int cycles, int ins, int idle_cycles);
 
+void read_cfg();
 
 char* concat(char* s1, char* s2);
 

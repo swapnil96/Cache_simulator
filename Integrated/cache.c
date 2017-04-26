@@ -504,6 +504,7 @@ char* perform_access(unsigned addr, unsigned access_type, unsigned type, char* s
 			my_cache_stat_d->accesses++;	
 			if (hit == 1)
 			{
+				temp->tag = tag;
 				switch(type)
 				{
 					case 0:							//Load data from memory
@@ -567,9 +568,9 @@ char* perform_access(unsigned addr, unsigned access_type, unsigned type, char* s
 								my_cache_stat_d->copies_back += my_cache_d->block_size / WORD_SIZE;
 								
 								// Can't as memdump will give wrong results
-								// memory[addr] = strdup(store);		// Store diretly as only a bite comes for storing.
 
 								write_to_cache(byte_index, word_index, temp, store);
+								memory[addr] = strdup(store);		// Store diretly for storing in no write allocate and writethrough.
 								ans = strdup(store);
 								temp->dirty = 1;								
 
@@ -580,7 +581,7 @@ char* perform_access(unsigned addr, unsigned access_type, unsigned type, char* s
 			}
 			else 				// Miss
 			{
-				my_cache_stat_d->demand_fetches += my_cache_d->block_size / WORD_SIZE; // Compulsory for all in misses.
+				// my_cache_stat_d->demand_fetches += my_cache_d->block_size / WORD_SIZE; // Compulsory for all in misses.
 				my_cache_stat_d->misses++;
 				switch(type)
 				{
@@ -659,6 +660,7 @@ char* perform_access(unsigned addr, unsigned access_type, unsigned type, char* s
 						}
 					break;
 				}
+				to_replace->tag = tag;
 			}
 
 		break;
