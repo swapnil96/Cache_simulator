@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include "processor.h"
-#include "cache.h"
 
 void store_multiply(double a);
 void store_multiply_add(double a);
@@ -14,8 +13,6 @@ char* multiply(double a);
 char* multiply_add(double a);
 
 // GLobal variables
-char* cfg;
-
 int number;
 char* memory[67108864];
 instruction* instruction_array[20000];
@@ -771,8 +768,9 @@ void* memory_function(void* args)
                 if(EX_MEM_read->MEM_WRITE == 1) //st
                 {
                     // aa = strdup(actual_result + 24);
+                    // memory[addr * 4] = strdup(aa);
                     perform_access(addr * 4, 1, 0, aa);
-                    memory[addr * 4] = strdup(aa);
+                    
                     printf("22 - Stroring %s at %d\n", aa,(addr * 4));
                 }             
                 break;
@@ -928,7 +926,7 @@ void control_function()
         ID_EX_write->zero_extend = 0;
     }
 
-    if(type_array[2] == 1 || type_array[2] == 3 || type_array[2] == 4 || type_array[2] == 5 || type_array[2] == 6 || type_array[2] == 7 || type_array[2] == 9 || type_array[2] == 10 || type_array[2] == 11 || type_array[2] == 13 || type_array[2] == 15 || type_array[2] == 29)
+    if(type_array[2] == 1 || type_array[2] == 3 || type_array[2] == 4 || type_array[2] == 5 || type_array[2] == 6 || type_array[2] == 7 || type_array[2] == 9 || type_array[2] == 10 || type_array[2] == 11 || type_array[2] == 13 || type_array[2] == 15 || type_array[2] == 29 || type_array[2] == 30 || type_array[2] == 32)
     {
         ID_EX_write->ALU_src_2 = 1;
     }
@@ -1018,7 +1016,7 @@ void control_function()
     }
 
     ID_EX_write->REG_WRITE = 0;
-    if(type_array[2] != 15 && type_array[2] != 16 && type_array[2] != 17 && type_array[2] != 18 && type_array[2] != 19 && type_array[2] != 22 && type_array[2] != 23 && type_array[2] != 24 && type_array[2] != 27)
+    if(type_array[2] != 15 && type_array[2] != 16 && type_array[2] != 17 && type_array[2] != 18 && type_array[2] != 19 && type_array[2] != 22 && type_array[2] != 23 && type_array[2] != 24 && type_array[2] != 27 && type_array[2] != 32)
     {
         ID_EX_write->REG_WRITE = 1;
     }
@@ -1047,11 +1045,11 @@ void control_function()
         ID_EX_write->MEM_WRITE = 0;
     }
 
-    if(type_array[2] == 2 || type_array[2] == 8 || type_array[2] == 12 || type_array[2] == 14 || type_array[2] == 20 || type_array[2] == 21)
+    if(type_array[2] == 2 || type_array[2] == 8 || type_array[2] == 12 || type_array[2] == 14 || type_array[2] == 20 || type_array[2] == 21 || type_array[2] == 31)
     {
         ID_EX_write->REG_DEST = 1;
     }
-    else if(type_array[2] == 4 || type_array[2] == 5 || (type_array[2] < 20 && type_array[2] > 14) || type_array[2] == 22 || type_array[2] == 23 || type_array[2] == 24 || type_array[2] == 27)
+    else if(type_array[2] == 4 || type_array[2] == 5 || (type_array[2] < 20 && type_array[2] > 14) || type_array[2] == 22 || type_array[2] == 23 || type_array[2] == 24 || type_array[2] == 27 || type_array[2] == 32)
     {
         ID_EX_write->REG_DEST = 2;
     }
@@ -1491,7 +1489,33 @@ char* alu(char* x, char* y,int ALU_op)
 
         case 29:
             t = y;
-            break;       
+            break;
+
+        case 30:
+            a = bin_to_dec(x);
+            b = bin_to_dec(y);
+            if(a < b)
+                t = "00000000000000000000000000000001";
+            else
+                t = "00000000000000000000000000000000";
+            break;
+
+        case 31:
+            a = bin_to_dec(x);
+            b = bin_to_dec(y);
+            c = a + b;
+            t = dec_to_bin(c);
+            break;
+
+        case 32:
+            a = bin_to_dec(x);
+            b = bin_to_dec(y);
+            if (a != b)
+            {
+                branch_flag = 1;
+                printf("branch_flag set\n");
+            }
+            break;    
     }
     return t;
 }
@@ -1678,6 +1702,59 @@ char* print_ins(instruction* ins)
             ans = concat(ans, (find_register(ins->Rt))->name);
             ans = concat(ans, ", address");
             break;
+
+        case 24:
+            ans = concat(ans, "j ");
+            ans = concat(ans, ", target");
+            break;
+
+        case 25:
+            ans = concat(ans, "jal ");
+            ans = concat(ans, ", target");
+            break;
+
+        case 26:
+            ans = concat(ans, "jalr ");
+            ans = concat(ans, (find_register(ins->Rd))->name);
+            ans = concat(ans, ", ");
+            ans = concat(ans, (find_register(ins->Rs))->name);
+            break;
+
+        case 27:
+            ans = concat(ans, "jr ");
+            ans = concat(ans, (find_register(ins->Rs))->name);
+            break;
+
+        case 28:
+            ans = concat(ans, "mflo ");
+            ans = concat(ans, (find_register(ins->Rd))->name);
+            break;
+
+        case 29:
+            ans = concat(ans, "move ");
+            ans = concat(ans, (find_register(ins->Rd))->name);
+            ans = concat(ans, (find_register(ins->Rs))->name);
+            break;
+
+        case 30:
+            ans = concat(ans, "slt ");
+        
+        case 31:
+            ans = concat(ans, "addiu ");
+            ans = concat(ans, (find_register(ins->Rt))->name);
+            ans = concat(ans, ", ");
+            ans = concat(ans, (find_register(ins->Rs))->name);
+            ans = concat(ans, ", imm");
+            break;
+
+        case 32:
+            ans = concat(ans, "bne ");
+            ans = concat(ans, (find_register(ins->Rs))->name);
+            ans = concat(ans, ", ");
+            ans = concat(ans, (find_register(ins->Rt))->name);
+            ans = concat(ans, ", label");
+            break;
+
     }
 
     return ans;
@@ -1725,4 +1802,3 @@ void start()
     print_result_file(cycle, number, idle_cycles);
     return;
 }
-
